@@ -1,73 +1,126 @@
-# React + TypeScript + Vite
+# Ashley Kier Ferreol - Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive portfolio showcasing cloud engineering expertise, certifications, and projects built with React, TypeScript, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Animated Hero Section** with profile image and typing effects
+- **Interactive Skills Cards** with 3D tilt effects and spotlight
+- **Professional Certificates** showcase with AWS, Cisco, and DataCamp certifications
+- **Featured Projects** including Clash Arena 3D game and CareerAI platform
+- **Animated Navigation Menu** with GSAP-powered transitions
+- **WebGL Background** with interactive light rays
+- **Fully Responsive** design with modern UI/UX
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS v4** - Styling
+- **GSAP** - Animations
+- **OGL** - WebGL graphics
 
-## Expanding the ESLint configuration
+## 📦 Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Run development server
+npm run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Build for production
+npm run build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Preview production build
+npm run preview
+
+# Lint code
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🌐 Deploy to Vercel
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This project is ready to deploy to Vercel:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Quick Deploy
+
+1. Push your code to GitHub
+2. Go to [Vercel](https://vercel.com)
+3. Click "New Project"
+4. Import your repository
+5. Vercel will auto-detect the Vite framework
+6. Click "Deploy"
+
+### Using Vercel CLI
+
+```bash
+# Install Vercel CLI globally
+npm i -g vercel
+
+# Deploy to Vercel
+vercel
+
+# Deploy to production
+vercel --prod
 ```
+
+## 📁 Project Structure
+
+```
+portfolio/
+├── src/
+│   ├── components/
+│   │   ├── CertificateBento.tsx
+│   │   ├── LightRays.tsx
+│   │   ├── LogoLoop.tsx
+│   │   ├── MagicBento.tsx
+│   │   ├── StaggeredMenu.tsx
+│   │   └── TextType.tsx
+│   ├── assets/
+│   │   ├── certificates/
+│   │   ├── projects/
+│   │   └── profile/
+│   ├── App.tsx
+│   ├── App.css
+│   └── main.tsx
+├── public/
+├── vercel.json
+└── package.json
+```
+
+## 🎨 Key Sections
+
+- **Hero** - Introduction with animated name and role
+- **Skills** - Interactive skill cards showcasing expertise
+- **Certificates** - Professional certifications and badges
+- **Projects** - Featured work with descriptions and tech stacks
+- **Footer** - Contact information and quick links
+
+## ⚙️ Configuration
+
+The project uses:
+
+- `vite.config.ts` - Vite configuration
+- `tailwind.config.js` - Tailwind CSS configuration
+- `eslint.config.js` - ESLint rules (warnings only for deployment)
+- `vercel.json` - Vercel deployment configuration
+
+## 📝 Notes
+
+- All linting errors are configured as warnings for smooth deployment
+- Build output is optimized for production
+- Images are properly optimized and lazy-loaded
+- Responsive design works on all screen sizes
+
+## 👤 Author
+
+**Ashley Kier Ferreol**
+
+- Cloud Engineer & Full-Stack Developer
+- AWS Certified Solutions Architect & Cloud Practitioner
+
+---
+
+Built with 💜 and coffee by Ashley
