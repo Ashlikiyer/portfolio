@@ -155,7 +155,7 @@ function App() {
                 {/* Social Links */}
                 <div className="flex gap-4 pt-2">
                   <a
-                    href="https://github.com"
+                    href="https://github.com/Ashlikiyer"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-11 h-11 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 hover:border-blue-500/40 rounded-lg flex items-center justify-center transition-all group"
@@ -164,7 +164,7 @@ function App() {
                     <SiGithub className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
                   </a>
                   <a
-                    href="https://linkedin.com"
+                    href="https://www.linkedin.com/in/kierferreol/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-11 h-11 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 hover:border-blue-500/40 rounded-lg flex items-center justify-center transition-all group"
@@ -810,7 +810,7 @@ function App() {
                     GitHub
                   </a>
                   <a
-                    href="https://linkedin.com"
+                    href="https://www.linkedin.com/in/kierferreol/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-slate-800/50 border border-purple-500/20 rounded-lg text-gray-300 hover:text-white hover:border-purple-500/50 hover:bg-slate-800 transition-all text-sm flex items-center gap-2 group"
@@ -825,7 +825,7 @@ function App() {
                     LinkedIn
                   </a>
                   <a
-                    href="mailto:contact@example.com"
+                    href="mailto:ashleykierferreol@gmail.com"
                     className="px-4 py-2 bg-slate-800/50 border border-purple-500/20 rounded-lg text-gray-300 hover:text-white hover:border-purple-500/50 hover:bg-slate-800 transition-all text-sm flex items-center gap-2 group"
                   >
                     <svg
