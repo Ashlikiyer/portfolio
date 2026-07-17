@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "./App.css";
 import LightRays from "./components/LightRays";
 import TextType from "./components/TextType";
@@ -15,10 +16,12 @@ import datacampCloud from "./assets/datacamp cloud.png";
 import introCyberBadge from "./assets/introduction to cyber badge.png";
 import networkingBadge from "./assets/networking badge.png";
 import solutionArchBadge from "./assets/solution arch.png";
+import awsHackathon from "./assets/AWS_Hackaton.JPG";
 
 // Import project images
-import clashArena from "./assets/clash arena.png";
-import careerAI from "./assets/career.png";
+import ragChatbot from "./assets/rag_chatbot.png";
+import leadCrm from "./assets/lead_crm.png";
+import gcfas from "./assets/gcfas.png";
 import profileImage from "./assets/kels.png";
 import {
   SiAmazon,
@@ -35,8 +38,35 @@ import {
 import { FaEnvelope } from "react-icons/fa";
 
 function App() {
+  useEffect(() => {
+    const timelineItems = document.querySelectorAll<HTMLElement>(
+      ".timeline-item",
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+    );
+
+    timelineItems.forEach((item) => observer.observe(item));
+
+    return () => observer.disconnect();
+  }, []);
+
   const menuItems = [
     { label: "Home", ariaLabel: "Go to home page", link: "#home" },
+    {
+      label: "Experience",
+      ariaLabel: "View professional experience",
+      link: "#experience",
+    },
     {
       label: "Skills",
       ariaLabel: "View skills and expertise",
@@ -55,9 +85,9 @@ function App() {
   ];
 
   const socialItems = [
-    { label: "GitHub", link: "https://github.com" },
-    { label: "LinkedIn", link: "https://linkedin.com" },
-    { label: "Email", link: "mailto:contact@example.com" },
+    { label: "GitHub", link: "https://github.com/Ashlikiyer" },
+    { label: "LinkedIn", link: "https://www.linkedin.com/in/kierferreol/" },
+    { label: "Email", link: "mailto:ashleykierferreol@gmail.com" },
   ];
 
   return (
@@ -120,11 +150,8 @@ function App() {
 
                   {/* Title with Typing Animation */}
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl md:text-3xl font-semibold text-white">
-                      Cloud
-                    </span>
                     <TextType
-                      text={["Engineer", "Architect", "DevOps Specialist"]}
+                        text={["Software Engineer", "AI Developer", "Frontend & Full-Stack"]}
                       typingSpeed={100}
                       pauseDuration={2000}
                       deletingSpeed={50}
@@ -140,16 +167,16 @@ function App() {
 
                 {/* Description */}
                 <p className="text-gray-400 text-base leading-relaxed max-w-xl">
-                  Transforming ideas into interactive and seamless digital
-                  experiences with cutting-edge{" "}
-                  <span className="text-cyan-400 font-semibold">
-                    cloud development
-                  </span>
-                  . Passionate about designing, implementing, and managing cloud
-                  infrastructure solutions on{" "}
+                  Computer Science student and software engineer building
+                  practical, secure, and interactive digital experiences with{" "}
+                    <span className="text-cyan-400 font-semibold">
+                      full-stack development and AI integration
+                    </span>
+                    . Experienced through professional roles in software engineering,
+                    cloud administration, QA testing, and product development across{" "}
                   <span className="text-orange-400 font-semibold">AWS</span>,{" "}
-                  <span className="text-blue-400 font-semibold">Azure</span>,
-                  and <span className="text-red-400 font-semibold">GCP</span>.
+                  <span className="text-blue-400 font-semibold">full-stack</span>,
+                  and <span className="text-purple-400 font-semibold">AI</span>.
                 </p>
 
                 {/* Social Links */}
@@ -173,7 +200,7 @@ function App() {
                     <SiLinkedin className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
                   </a>
                   <a
-                    href="mailto:contact@example.com"
+                  href="mailto:ashleykierferreol@gmail.com"
                     className="w-11 h-11 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 hover:border-blue-500/40 rounded-lg flex items-center justify-center transition-all group"
                     aria-label="Email"
                   >
@@ -277,30 +304,141 @@ function App() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-purple-500/20">
               <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
                 <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-cyan-400 group-hover:scale-110 transition-transform">
-                  5+
+                  1+
                 </div>
-                <p className="text-gray-400 text-xs mt-2">Years Experience</p>
+                <p className="text-gray-400 text-xs mt-2">Year of Experience</p>
               </div>
 
               <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
                 <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-400 group-hover:scale-110 transition-transform">
-                  50+
+                  6+
                 </div>
-                <p className="text-gray-400 text-xs mt-2">Projects Delivered</p>
+                <p className="text-gray-400 text-xs mt-2">Featured Projects</p>
               </div>
 
               <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
                 <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400 group-hover:scale-110 transition-transform">
-                  99.9%
+                  4
                 </div>
-                <p className="text-gray-400 text-xs mt-2">Uptime</p>
+                <p className="text-gray-400 text-xs mt-2">Internships & Roles</p>
               </div>
 
               <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
                 <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-400 group-hover:scale-110 transition-transform">
-                  AWS
+                  3
                 </div>
-                <p className="text-gray-400 text-xs mt-2">Certified</p>
+                <p className="text-gray-400 text-xs mt-2">Live Projects</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Experience Section */}
+        <section id="experience" className="py-20 px-6 relative">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Professional{" "}
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-400">
+                  Experience
+                </span>
+              </h2>
+              <p className="text-gray-400 text-lg">
+                Hands-on roles building cloud infrastructure, testing quality, and leading product marketing
+              </p>
+            </div>
+
+            <div className="relative">
+              {/* Central Timeline Line */}
+              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500/20 via-purple-400/70 to-purple-500/20 -translate-x-1/2"></div>
+
+              {/* Timeline Dots */}
+              <div className="hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
+
+              <div className="space-y-8">
+                {/* Experience Card 1 - Left */}
+                <div className="relative">
+                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
+                  <div className="timeline-item md:w-1/2 md:pr-12">
+                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
+                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Feb 2026 – May 2026</span>
+                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">System & Cloud Administrator</h3>
+                      <p className="text-gray-300 font-medium">Pilipinas Micro-Matrix Technology (PMT Joint Venture) Inc.</p>
+                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                        Administered system infrastructure and cloud environments ensuring uptime, reliability, and security. Supported deployment, configuration, and monitoring of cloud-based services and server resources. Collaborated on system provisioning, access management, and network configuration.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Experience Card 2 - Right */}
+                <div className="relative">
+                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
+                  <div className="timeline-item md:w-1/2 md:ml-auto md:pl-12">
+                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
+                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Oct 2025 – Present</span>
+                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">Marketing Lead</h3>
+                      <p className="text-gray-300 font-medium">Catalyx Solutions</p>
+                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                        Lead brand strategy, marketing direction, and market positioning for AI-driven and security-focused products. Developed marketing materials, pitch decks, and product messaging for hackathons, demos, and presentations. Coordinated user engagement, outreach, and promotional efforts with product and technical teams.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Experience Card 3 - Left */}
+                <div className="relative">
+                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
+                  <div className="timeline-item md:w-1/2 md:pr-12">
+                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
+                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Dec 2025 – Feb 2026</span>
+                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">Quality Assurance Tester</h3>
+                      <p className="text-gray-300 font-medium">Lujo PH</p>
+                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                        Created and maintained QA test plans, test cases, and scenarios based on business requirements. Performed manual testing on web applications to identify bugs, usability issues, and performance concerns. Conducted functional, regression, and UAT testing. Documented defects and collaborated with developers and designers to ensure timely resolution.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Experience Card 4 - Right */}
+                <div className="relative">
+                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
+                  <div className="timeline-item md:w-1/2 md:ml-auto md:pl-12">
+                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
+                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Mar 2025 – Aug 2025</span>
+                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">Software Engineer & UI/UX Design Intern</h3>
+                      <p className="text-gray-300 font-medium">Kloudtech</p>
+                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                        Contributed to secure software development using best practices in coding, system design, and UI/UX principles. Implemented scalable backend and frontend components focusing on performance, usability, and security. Collaborated in Agile workflows, peer code reviews, CI/CD pipelines, and UI/UX design refinement.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Education & Achievements */}
+            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
+                <h3 className="text-lg font-bold text-cyan-400 mb-2 group-hover:scale-105 transition-transform">Education</h3>
+                <p className="text-white font-semibold">Gordon College</p>
+                <p className="text-gray-400 text-sm">BS Computer Science</p>
+                <p className="text-gray-500 text-xs">Graduated Jul 2026</p>
+              </div>
+
+              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
+                <h3 className="text-lg font-bold text-cyan-400 mb-2 group-hover:scale-105 transition-transform">Achievements</h3>
+                <p className="text-white font-semibold">Base PH Hackathon Winner</p>
+                <p className="text-gray-400 text-sm">DataCamp Scholar</p>
+                <p className="text-gray-500 text-xs">AWS Cloud Club Committee</p>
+              </div>
+
+              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
+                <h3 className="text-lg font-bold text-cyan-400 mb-2 group-hover:scale-105 transition-transform">Affiliations</h3>
+                <p className="text-white font-semibold">AWS Cloud Club</p>
+                <p className="text-gray-400 text-sm">Operations Committee</p>
+                <p className="text-gray-500 text-xs">Gordon College Chapter</p>
               </div>
             </div>
           </div>
@@ -317,7 +455,7 @@ function App() {
                 </span>
               </h2>
               <p className="text-gray-400 text-lg">
-                My core competencies and technical skills
+                Technologies and capabilities I use to build useful, reliable products
               </p>
             </div>
 
@@ -325,45 +463,45 @@ function App() {
               cards={[
                 {
                   color: "rgba(15, 23, 42, 0.6)",
-                  title: "Cloud Engineering",
-                  description:
-                    "Expert in AWS, Azure, and GCP cloud infrastructure design, deployment, and management",
-                  label: "Infrastructure",
-                },
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
-                  title: "AWS Cloud",
-                  description:
-                    "Certified Solutions Architect with deep expertise in EC2, S3, Lambda, RDS, and more",
-                  label: "Amazon Web Services",
-                },
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
                   title: "Frontend Development",
                   description:
-                    "Building modern, responsive web applications with React, TypeScript, and Tailwind CSS",
+                    "React, React Native, Next.js, TailwindCSS, ShadCN UI, MUI — building responsive, modern web and mobile applications",
                   label: "Web Development",
+                },
+                {
+                  color: "rgba(15, 23, 42, 0.6)",
+                  title: "Backend Development",
+                  description:
+                    "Node.js, Express.js — developing RESTful APIs, server-side logic, and backend services",
+                  label: "Server-Side",
+                },
+                {
+                  color: "rgba(15, 23, 42, 0.6)",
+                  title: "Cloud & Infrastructure",
+                  description:
+                    "AWS EC2, AWS Cloud Essentials, Ubuntu Server, Nginx, PM2 — deploying and managing cloud-based applications",
+                  label: "Cloud Computing",
                 },
                 {
                   color: "rgba(15, 23, 42, 0.6)",
                   title: "UI/UX Design",
                   description:
-                    "Creating beautiful, user-friendly interfaces with focus on accessibility and performance",
+                    "Figma, Canva — designing user interfaces and creating visual assets for web and mobile",
                   label: "Design",
                 },
                 {
                   color: "rgba(15, 23, 42, 0.6)",
-                  title: "Solution Architecture",
+                  title: "AI & LLM Integration",
                   description:
-                    "Designing scalable, secure, and cost-effective cloud solutions for enterprise needs",
-                  label: "Architecture",
+                    "Groq, Agora AI, Prompt Engineering, Function Calling, RAG systems — integrating AI models into applications",
+                  label: "Artificial Intelligence",
                 },
                 {
                   color: "rgba(15, 23, 42, 0.6)",
-                  title: "DevOps & Automation",
+                  title: "Programming & Databases",
                   description:
-                    "CI/CD pipelines, Infrastructure as Code, containerization with Docker and Kubernetes",
-                  label: "Automation",
+                    "JavaScript, TypeScript, SQL, HTML/CSS — core programming skills and database fundamentals",
+                  label: "Core Skills",
                 },
               ]}
               textAutoHide={false}
@@ -385,11 +523,11 @@ function App() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Professional{" "}
+                  Professional &{" "}
                 <span className="text-purple-400">Certificates</span>
               </h2>
               <p className="text-gray-400 text-lg">
-                Industry-recognized certifications and achievements
+                AWS training, technical courses, badges, and academic achievements
               </p>
             </div>
 
@@ -455,8 +593,16 @@ function App() {
                   issuer: "Base PH",
                   year: "2023",
                   type: "Participant",
-
                   badgeColor: "bg-blue-600",
+                },
+                {
+                  image: awsHackathon,
+                  title: "AWS Cloud Club PH Innovation Cup 2025",
+                  issuer: "AWS Cloud Club Philippines",
+                  year: "2025",
+                  type: "Participant",
+                  icon: SiAmazon,
+                  badgeColor: "bg-orange-500",
                 },
               ]}
               enableHover={true}
@@ -485,7 +631,7 @@ function App() {
                   </div>
                 </div>
                 <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                  7
+                   8
                 </h3>
                 <p className="text-gray-400 text-xs">Total Badges</p>
               </div>
@@ -510,7 +656,7 @@ function App() {
                   </div>
                 </div>
                 <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                  7
+                   8
                 </h3>
                 <p className="text-gray-400 text-xs">Verified</p>
               </div>
@@ -535,7 +681,7 @@ function App() {
                   </div>
                 </div>
                 <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                  4
+                   5
                 </h3>
                 <p className="text-gray-400 text-xs">This Year</p>
               </div>
@@ -560,7 +706,7 @@ function App() {
                   </div>
                 </div>
                 <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                  3+
+                   4+
                 </h3>
                 <p className="text-gray-400 text-xs">Platforms</p>
               </div>
@@ -581,44 +727,45 @@ function App() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Clash Arena Project */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Personal RAG Chatbot Project */}
               <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:shadow-purple-500/20 group">
                 <div className="relative h-44 overflow-hidden bg-slate-900/50">
                   <img
-                    src={clashArena}
-                    alt="Clash Arena Game"
+                    src={ragChatbot}
+                    alt="Personal RAG Chatbot"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
                 </div>
                 <div className="p-5">
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                    Clash Arena - 3D Strategy Game
+                    Personal RAG Chatbot
                   </h3>
                   <p className="text-gray-400 mb-3 text-sm leading-relaxed line-clamp-3">
-                    A real-time multiplayer 3D strategy game inspired by Clash
-                    Royale. Players strategically deploy deck cards to battle
-                    opponents, aiming to destroy the enemy tower first. Features
-                    immersive 3D graphics, tactical gameplay, and competitive
-                    tower defense mechanics.
+                    AI Document Q&A Platform with PDF ingestion, text chunking, vector embedding via Pinecone, semantic search, and LLM-generated responses using Groq's Llama 3.1 70B model. Supports multi-document querying with filename filtering.
                   </p>
                   <div className="flex flex-wrap gap-2 mb-3">
                     <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-xs font-medium border border-purple-500/20">
-                      O'Hara.ai
+                      Next.js 15
                     </span>
                     <span className="px-2 py-0.5 bg-blue-500/10 text-blue-300 rounded text-xs font-medium border border-blue-500/20">
-                      3D Graphics
+                      TypeScript
                     </span>
                     <span className="px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded text-xs font-medium border border-cyan-500/20">
-                      Multiplayer
+                      LangChain.js
                     </span>
                     <span className="px-2 py-0.5 bg-green-500/10 text-green-300 rounded text-xs font-medium border border-green-500/20">
-                      Game AI
+                      Pinecone
+                    </span>
+                    <span className="px-2 py-0.5 bg-orange-500/10 text-orange-300 rounded text-xs font-medium border border-orange-500/20">
+                      Groq
                     </span>
                   </div>
                   <a
-                    href="#"
+                    href="https://ragdocs-app.vercel.app/landing"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-purple-400 hover:text-purple-300 text-sm font-semibold inline-flex items-center group/link"
                   >
                     View Project
@@ -639,26 +786,80 @@ function App() {
                 </div>
               </div>
 
-              {/* CareerAI Project */}
+              {/* Lead-to-CRM Automation Agent Project */}
               <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:shadow-purple-500/20 group">
                 <div className="relative h-44 overflow-hidden bg-slate-900/50">
                   <img
-                    src={careerAI}
-                    alt="CareerAI Platform"
+                    src={leadCrm}
+                    alt="Lead-to-CRM Automation Agent"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
                 </div>
                 <div className="p-5">
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                    CareerAI - AI Career Advisor
+                    Lead-to-CRM Automation Agent
                   </h3>
                   <p className="text-gray-400 mb-3 text-sm leading-relaxed line-clamp-3">
-                    An intelligent career recommendation platform powered by AI
-                    that generates personalized career roadmaps. Users receive
-                    industry-specific guidance, skill development paths, and
-                    actionable steps tailored to their desired career trajectory
-                    in tech.
+                    End-to-end automation pipeline that captures form-submitted leads, processes them in real-time using Groq's LLM API for auto-generated summaries, urgency scoring, and categorization. Integrates with Airtable CRM and Slack for instant team notifications.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-xs font-medium border border-purple-500/20">
+                      Node.js
+                    </span>
+                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-300 rounded text-xs font-medium border border-blue-500/20">
+                      Express.js
+                    </span>
+                    <span className="px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded text-xs font-medium border border-cyan-500/20">
+                      Groq API
+                    </span>
+                    <span className="px-2 py-0.5 bg-green-500/10 text-green-300 rounded text-xs font-medium border border-green-500/20">
+                      Airtable
+                    </span>
+                    <span className="px-2 py-0.5 bg-orange-500/10 text-orange-300 rounded text-xs font-medium border border-orange-500/20">
+                      Slack API
+                    </span>
+                  </div>
+                  <a
+                    href="https://lead-to-crm-agent.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-purple-400 hover:text-purple-300 text-sm font-semibold inline-flex items-center group/link"
+                  >
+                    View Project
+                    <svg
+                      className="w-4 h-4 ml-1 transition-transform group-hover/link:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              {/* GCFAS Project */}
+              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:shadow-purple-500/20 group">
+                <div className="relative h-44 overflow-hidden bg-slate-900/50">
+                  <img
+                    src={gcfas}
+                    alt="GCFAS Project"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
+                    GCFAS - Gordon College Faculty Assessment System
+                  </h3>
+                  <p className="text-gray-400 mb-3 text-sm leading-relaxed line-clamp-3">
+                    A comprehensive faculty assessment system for Gordon College that streamlines the evaluation process. Built with modern web technologies to provide an efficient and user-friendly interface for faculty performance assessments.
                   </p>
                   <div className="flex flex-wrap gap-2 mb-3">
                     <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-xs font-medium border border-purple-500/20">
@@ -668,23 +869,16 @@ function App() {
                       TypeScript
                     </span>
                     <span className="px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded text-xs font-medium border border-cyan-500/20">
-                      Tailwind
+                      TailwindCSS
                     </span>
                     <span className="px-2 py-0.5 bg-green-500/10 text-green-300 rounded text-xs font-medium border border-green-500/20">
-                      Shadcn/ui
-                    </span>
-                    <span className="px-2 py-0.5 bg-orange-500/10 text-orange-300 rounded text-xs font-medium border border-orange-500/20">
-                      PostgreSQL
-                    </span>
-                    <span className="px-2 py-0.5 bg-pink-500/10 text-pink-300 rounded text-xs font-medium border border-pink-500/20">
-                      AWS EC2
-                    </span>
-                    <span className="px-2 py-0.5 bg-red-500/10 text-red-300 rounded text-xs font-medium border border-red-500/20">
-                      AI/ML
+                      Node.js
                     </span>
                   </div>
                   <a
-                    href="#"
+                    href="https://gcfas.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-purple-400 hover:text-purple-300 text-sm font-semibold inline-flex items-center group/link"
                   >
                     View Project
@@ -725,9 +919,9 @@ function App() {
                   </h3>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Specializing in AWS cloud infrastructure and modern web
-                  development. Building scalable, secure solutions that
-                  transform complex challenges into elegant digital experiences.
+                  Computer Science student passionate about cloud engineering,
+                  full-stack development, and AI. Building practical solutions
+                  through internships, projects, and continuous learning.
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -850,12 +1044,10 @@ function App() {
             {/* Bottom Bar */}
             <div className="pt-8 border-t border-purple-500/10 flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <span>Crafted with</span>
-                <span className="text-purple-400 animate-pulse">💜</span>
-                <span>and coffee by Ashley</span>
+                <span>Crafted with care and coffee by Ashley</span>
               </div>
               <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span>© 2024 Ashley Kier Ferreol</span>
+                <span>© 2026 Ashley Kier Ferreol</span>
                 <button
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })

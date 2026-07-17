@@ -14,3 +14,128 @@ body {
   padding: 0;
   overflow-x: hidden;
 }
+
+/* Timeline scroll reveal animations */
+.timeline-item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.timeline-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Left-side items slide in from left */
+.timeline-item:nth-child(odd) {
+  transform: translateX(-30px) translateY(30px);
+}
+
+.timeline-item:nth-child(odd).is-visible {
+  transform: translateX(0) translateY(0);
+}
+
+/* Right-side items slide in from right */
+.timeline-item:nth-child(even) {
+  transform: translateX(30px) translateY(30px);
+}
+
+.timeline-item:nth-child(even).is-visible {
+  transform: translateX(0) translateY(0);
+}
+
+/* Timeline dots fade and scale in */
+.timeline-dot {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  transition: opacity 0.4s ease-out 0.2s, transform 0.4s ease-out 0.2s;
+}
+
+.is-visible ~ .timeline-dot,
+.timeline-item.is-visible + * .timeline-dot {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-item,
+  .timeline-dot {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 640px) {
+  /* Improve tap targets for cards and links */
+  .timeline-item,
+  [class*="rounded-xl"] {
+    min-height: 44px;
+  }
+
+  /* Ensure images don't cause horizontal overflow */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Fix hero section spacing on mobile */
+  section#home {
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+  }
+
+  /* Mobile timeline animations - simpler transforms */
+  .timeline-item {
+    transform: translateY(20px);
+  }
+
+  .timeline-item:nth-child(odd),
+  .timeline-item:nth-child(even) {
+    transform: translateY(20px);
+  }
+
+  .timeline-item.is-visible,
+  .timeline-item:nth-child(odd).is-visible,
+  .timeline-item:nth-child(even).is-visible {
+    transform: translateY(0);
+  }
+}
+
+/* Tablet fixes */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Adjust timeline card spacing */
+  .timeline-item {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Fix bento grid gaps */
+  [class*="grid-cols-"] {
+    gap: 0.75rem;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  /* Ensure smooth hover effects on desktop */
+  .timeline-item {
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  /* Better card hover states */
+  [class*="hover:shadow"] {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+}
+
+/* Fix for iOS Safari viewport issues */
+@supports (-webkit-touch-callout: none) {
+  section {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}
