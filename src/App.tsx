@@ -167,8 +167,8 @@ function App() {
 
                 {/* Description */}
                 <p className="text-gray-400 text-base leading-relaxed max-w-xl">
-                  Computer Science student and software engineer building
-                  practical, secure, and interactive digital experiences with{" "}
+                  Software engineer building practical, secure, and interactive
+                  digital experiences with{" "}
                     <span className="text-cyan-400 font-semibold">
                       full-stack development and AI integration
                     </span>
@@ -424,7 +424,6 @@ function App() {
                 <h3 className="text-lg font-bold text-cyan-400 mb-2 group-hover:scale-105 transition-transform">Education</h3>
                 <p className="text-white font-semibold">Gordon College</p>
                 <p className="text-gray-400 text-sm">BS Computer Science</p>
-                <p className="text-gray-500 text-xs">Graduated Jul 2026</p>
               </div>
 
               <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
@@ -919,9 +918,9 @@ function App() {
                   </h3>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Computer Science student passionate about cloud engineering,
+                  Software engineer passionate about cloud engineering,
                   full-stack development, and AI. Building practical solutions
-                  through internships, projects, and continuous learning.
+                  through impactful projects and continuous learning.
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
