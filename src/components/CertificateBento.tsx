@@ -89,9 +89,9 @@ const CertificateCard: React.FC<
   return (
     <div
       ref={cardRef}
-      className={`certificate-card group relative bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 transition-all duration-300 ${
+      className={`certificate-card group relative bg-white/[0.025] backdrop-blur-sm rounded-2xl overflow-hidden border border-white/8 transition-all duration-300 ${
         enableGlow
-          ? "hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/20"
+          ? "hover:border-violet-400/30 hover:shadow-2xl hover:shadow-violet-500/10"
           : ""
       }`}
       style={{
@@ -99,7 +99,7 @@ const CertificateCard: React.FC<
       }}
     >
       {/* Image Container */}
-      <div className="relative aspect-video bg-linear-to-br from-slate-800/50 to-slate-900/80 overflow-hidden border-b border-slate-700/30">
+      <div className="relative aspect-video bg-linear-to-br from-white/[0.04] to-transparent overflow-hidden border-b border-white/6">
         <img
           src={image}
           alt={title}
@@ -130,25 +130,25 @@ const CertificateCard: React.FC<
         )}
 
         {/* Gradient Overlay on Hover */}
-        <div className="absolute inset-0 bg-linear-to-t from-purple-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-violet-900/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
 
       {/* Content */}
       <div className="p-3">
-        <h3 className="text-sm font-semibold text-white line-clamp-2 group-hover:text-purple-400 transition-colors mb-1.5">
+        <h3 className="text-sm font-semibold text-white line-clamp-2 group-hover:text-violet-200 transition-colors mb-1.5">
           {title}
         </h3>
         <div className="flex items-center justify-between mb-2">
           <p className="text-xs text-gray-400 truncate flex-1">{issuer}</p>
           {year && (
-            <span className="text-xs text-purple-400 font-medium ml-2">
+            <span className="font-mono text-xs text-slate-500 ml-2">
               {year}
             </span>
           )}
         </div>
         {/* Type Badge */}
         <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-xs font-medium border border-purple-500/20">
+          <span className="px-2 py-0.5 bg-violet-400/10 text-violet-200 rounded-full text-xs font-medium border border-violet-400/15">
             {type}
           </span>
         </div>
@@ -187,7 +187,7 @@ const CertificateBento: React.FC<CertificateBentoProps> = ({
         `}
       </style>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
         {certificates.map((cert, index) => (
           <CertificateCard
             key={index}

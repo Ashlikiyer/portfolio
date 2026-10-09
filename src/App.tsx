@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import "./App.css";
 import LightRays from "./components/LightRays";
 import TextType from "./components/TextType";
@@ -6,42 +6,121 @@ import LogoLoop from "./components/LogoLoop";
 import MagicBento from "./components/MagicBento";
 import CertificateBento from "./components/CertificateBento";
 import StaggeredMenu from "./components/StaggeredMenu";
-import { SiCisco, SiDatacamp } from "react-icons/si";
+import Terminal from "./components/Terminal";
+import { useAchievements, type AchievementId } from "./components/achievementsContext";
 
-// Import certificate images
-import awsBadge from "./assets/aws badge.png";
-import baseBuildBadge from "./assets/base build badge.jpg";
-import cloudPractBadge from "./assets/cloud pract.png";
-import datacampCloud from "./assets/datacamp cloud.png";
-import introCyberBadge from "./assets/introduction to cyber badge.png";
-import networkingBadge from "./assets/networking badge.png";
-import solutionArchBadge from "./assets/solution arch.png";
-import awsHackathon from "./assets/AWS_Hackaton.JPG";
-
-// Import project images
-import ragChatbot from "./assets/rag_chatbot.png";
-import leadCrm from "./assets/lead_crm.png";
-import gcfas from "./assets/gcfas.png";
+import { SiGithub, SiLinkedin } from "react-icons/si";
+import { FaEnvelope } from "react-icons/fa";
+import { FiArrowRight, FiArrowUpRight, FiMapPin, FiArrowUp, FiTerminal } from "react-icons/fi";
 import profileImage from "./assets/kels.png";
 import {
-  SiAmazon,
-  SiDocker,
-  SiKubernetes,
-  SiGit,
-  SiPython,
-  SiJavascript,
-  SiTypescript,
-  SiReact,
-  SiLinkedin,
-  SiGithub,
-} from "react-icons/si";
-import { FaEnvelope } from "react-icons/fa";
+  EMAIL,
+  GITHUB,
+  LINKEDIN,
+  navLinks,
+  socials,
+  stats,
+  techStack,
+  experience,
+  highlights,
+  projects,
+  certificates,
+  certSummary,
+  skills,
+} from "./data";
+
+const card =
+  "rounded-2xl border border-white/8 bg-white/[0.025] backdrop-blur-sm transition-colors duration-300 hover:border-violet-400/30 hover:bg-white/[0.04]";
+
+function SectionHeading({
+  index,
+  eyebrow,
+  title,
+  subtitle,
+}: {
+  index: string;
+  eyebrow: string;
+  title: ReactNode;
+  subtitle?: string;
+}) {
+  return (
+    <div className="reveal mb-12 md:mb-16 max-w-2xl">
+      <p className="font-mono text-xs uppercase tracking-[0.2em] text-violet-300/80 mb-4 flex items-center gap-3">
+        <span className="text-cyan-300">{index}</span>
+        <span className="h-px w-8 bg-violet-400/40" />
+        {eyebrow}
+      </p>
+      <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight text-white">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="mt-4 text-slate-400 text-base md:text-lg leading-relaxed">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Tag({ children }: { children: ReactNode }) {
+  return (
+    <span className="px-2.5 py-1 rounded-full text-xs font-medium text-violet-200 bg-violet-400/10 border border-violet-400/15">
+      {children}
+    </span>
+  );
+}
+
+// Sections that unlock an achievement once scrolled into view
+const sectionAchievements: Record<string, AchievementId> = {
+  experience: "historian",
+  skills: "stack",
+  certificates: "certified",
+  contact: "explorer",
+};
 
 function App() {
+  const { unlock } = useAchievements();
+  const [terminalOpen, setTerminalOpen] = useState(false);
+
   useEffect(() => {
-    const timelineItems = document.querySelectorAll<HTMLElement>(
-      ".timeline-item",
+    unlock("hello");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            unlock(sectionAchievements[entry.target.id]);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.25 },
     );
+
+    Object.keys(sectionAchievements).forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [unlock]);
+
+  // Backtick opens the terminal from anywhere (except while typing in a field)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest("input, textarea, [contenteditable=true]")) return;
+      if (e.key === "`") {
+        e.preventDefault();
+        setTerminalOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    const items = document.querySelectorAll<HTMLElement>(".reveal");
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -52,47 +131,63 @@ function App() {
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+      { threshold: 0.1 },
     );
 
-    timelineItems.forEach((item) => observer.observe(item));
+    items.forEach((item) => observer.observe(item));
 
     return () => observer.disconnect();
   }, []);
 
   const menuItems = [
     { label: "Home", ariaLabel: "Go to home page", link: "#home" },
-    {
-      label: "Experience",
-      ariaLabel: "View professional experience",
-      link: "#experience",
-    },
-    {
-      label: "Skills",
-      ariaLabel: "View skills and expertise",
-      link: "#skills",
-    },
-    {
-      label: "Certificates",
-      ariaLabel: "View certificates and badges",
-      link: "#certificates",
-    },
-    {
-      label: "Projects",
-      ariaLabel: "View featured projects",
-      link: "#projects",
-    },
+    ...navLinks.map((l) => ({
+      label: l.label,
+      ariaLabel: `Go to ${l.label.toLowerCase()}`,
+      link: l.href,
+    })),
   ];
 
-  const socialItems = [
-    { label: "GitHub", link: "https://github.com/Ashlikiyer" },
-    { label: "LinkedIn", link: "https://www.linkedin.com/in/kierferreol/" },
-    { label: "Email", link: "mailto:ashleykierferreol@gmail.com" },
-  ];
+  const socialItems = socials.map((s) => ({ label: s.label, link: s.href }));
+
+  const [featured, ...otherProjects] = projects;
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-slate-900 via-purple-900 to-slate-900 relative">
-      {/* Staggered Menu Navigation */}
+    <div className="min-h-screen bg-ink text-slate-200 relative">
+      {/* Top bar: logo + desktop links. The Menu toggle comes from StaggeredMenu */}
+      <div className="fixed top-0 inset-x-0 z-40 h-24 bg-linear-to-b from-ink via-ink/85 to-transparent pointer-events-none" />
+      <nav className="fixed top-0 left-0 z-40 h-22 flex items-center px-6 md:px-8 gap-10">
+        <a
+          href="#home"
+          className="font-display text-lg font-bold tracking-tight text-white flex items-center gap-2"
+          aria-label="Ashley Kier Ferreol, back to top"
+        >
+          <span className="w-8 h-8 rounded-lg bg-linear-to-br from-violet-500 to-cyan-400 grid place-items-center text-ink text-sm">
+            AK
+          </span>
+          <span className="hidden sm:inline">Ashley Kier</span>
+        </a>
+      </nav>
+      <nav
+        className="hidden lg:flex fixed top-0 left-1/2 -translate-x-1/2 z-40 h-22 items-center"
+        aria-label="Sections"
+      >
+        <ul className="flex items-center gap-1 rounded-full border border-white/8 bg-white/[0.03] backdrop-blur-md px-2 py-1.5">
+          {navLinks.map((l) => (
+            <li key={l.href}>
+              <a
+                href={l.href}
+                className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/6 transition-colors"
+              >
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
+
       <StaggeredMenu
         position="right"
         items={menuItems}
@@ -107,963 +202,575 @@ function App() {
         isFixed={true}
       />
 
-      {/* Animated Light Rays Background */}
-      <div className="fixed inset-0 z-0">
+      {/* Background layers */}
+      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <LightRays
           raysOrigin="top-center"
-          raysColor="#3b82f6"
+          raysColor="#8b5cf6"
           raysSpeed={0.8}
           lightSpread={0.6}
-          rayLength={1.5}
+          rayLength={1.4}
           pulsating={false}
-          fadeDistance={1.2}
-          saturation={0.7}
+          fadeDistance={1.1}
+          saturation={0.8}
           followMouse={true}
           mouseInfluence={0.08}
           noiseAmount={0.05}
           distortion={0.03}
         />
       </div>
+      <div className="absolute inset-x-0 top-0 h-[900px] bg-grid z-0 pointer-events-none" aria-hidden="true" />
+      <div className="fixed inset-0 bg-noise z-0 pointer-events-none" aria-hidden="true" />
 
-      {/* Content with higher z-index */}
       <div className="relative z-10">
-        {/* Hero Section */}
+        {/* Hero */}
         <section
           id="home"
-          className="min-h-screen flex items-center px-6 pt-32 pb-12"
+          className="min-h-screen flex items-center px-6 pt-32 pb-16"
         >
-          <div className="max-w-7xl mx-auto w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-16">
-              {/* Left Side - Info */}
-              <div className="space-y-6">
-                {/* Name - Featured */}
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.25fr_1fr] gap-14 lg:gap-20 items-center">
+              <div className="space-y-7">
+                <div className="inline-flex items-center gap-2.5 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-3.5 py-1.5 font-mono text-xs text-emerald-300">
+                  <span className="relative flex w-2 h-2">
+                    <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-60" />
+                    <span className="relative w-2 h-2 rounded-full bg-emerald-400" />
+                  </span>
+                  Open to opportunities
+                </div>
+
                 <div className="space-y-4">
-                  <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                    <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-purple-400">
-                      ASHLEY KIER
-                    </span>
+                  <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight text-white">
+                    Ashley Kier
                     <br />
-                    <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-400 via-pink-400 to-blue-400">
-                      FERREOL
+                    <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-400 via-fuchsia-300 to-cyan-300">
+                      Ferreol
                     </span>
                   </h1>
 
-                  {/* Title with Typing Animation */}
-                  <div className="flex items-center gap-2">
+                  <div className="font-mono text-lg md:text-xl text-slate-300 flex items-center gap-2 min-h-8">
+                    <span className="text-cyan-300">&gt;</span>
                     <TextType
-                        text={["Software Engineer", "AI Developer", "Frontend & Full-Stack"]}
-                      typingSpeed={100}
+                      text={["Software Engineer", "AI Developer", "Frontend & Full-Stack"]}
+                      typingSpeed={90}
                       pauseDuration={2000}
-                      deletingSpeed={50}
+                      deletingSpeed={45}
                       loop={true}
                       showCursor={true}
-                      cursorCharacter="|"
-                      cursorClassName="text-blue-400"
-                      className="text-2xl md:text-3xl font-semibold text-white"
+                      cursorCharacter="▋"
+                      cursorClassName="text-violet-400"
+                      className="text-slate-200"
                       as="span"
                     />
                   </div>
                 </div>
 
-                {/* Description */}
-                <p className="text-gray-400 text-base leading-relaxed max-w-xl">
+                <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-xl">
                   Software engineer building practical, secure, and interactive
                   digital experiences with{" "}
-                    <span className="text-cyan-400 font-semibold">
-                      full-stack development and AI integration
-                    </span>
-                    . Experienced through professional roles in software engineering,
-                    cloud administration, QA testing, and product development across{" "}
-                  <span className="text-orange-400 font-semibold">AWS</span>,{" "}
-                  <span className="text-blue-400 font-semibold">full-stack</span>,
-                  and <span className="text-purple-400 font-semibold">AI</span>.
+                  <span className="text-slate-100 font-medium">
+                    full-stack development and AI integration
+                  </span>
+                  . Experienced through professional roles in software
+                  engineering, cloud administration, QA testing, and product
+                  development across{" "}
+                  <span className="text-slate-100 font-medium">AWS</span>,{" "}
+                  <span className="text-slate-100 font-medium">full-stack</span>,
+                  and <span className="text-slate-100 font-medium">AI</span>.
                 </p>
 
-                {/* Social Links */}
-                <div className="flex gap-4 pt-2">
+                <div className="flex flex-wrap items-center gap-3 pt-1">
                   <a
-                    href="https://github.com/Ashlikiyer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-11 h-11 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 hover:border-blue-500/40 rounded-lg flex items-center justify-center transition-all group"
-                    aria-label="GitHub"
+                    href="#projects"
+                    className="group inline-flex items-center gap-2 rounded-xl bg-violet-500 hover:bg-violet-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition-colors"
                   >
-                    <SiGithub className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                    View projects
+                    <FiArrowRight className="transition-transform group-hover:translate-x-0.5" />
                   </a>
                   <a
-                    href="https://www.linkedin.com/in/kierferreol/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-11 h-11 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 hover:border-blue-500/40 rounded-lg flex items-center justify-center transition-all group"
-                    aria-label="LinkedIn"
+                    href={`mailto:${EMAIL}`}
+                    className="inline-flex items-center gap-2 rounded-xl border border-white/12 bg-white/[0.03] hover:bg-white/[0.07] px-5 py-3 text-sm font-semibold text-slate-100 transition-colors"
                   >
-                    <SiLinkedin className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                    <FaEnvelope className="w-3.5 h-3.5" />
+                    Get in touch
                   </a>
-                  <a
-                  href="mailto:ashleykierferreol@gmail.com"
-                    className="w-11 h-11 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 hover:border-blue-500/40 rounded-lg flex items-center justify-center transition-all group"
-                    aria-label="Email"
+                  <div className="flex items-center gap-1 sm:ml-2">
+                    {socials.slice(0, 2).map(({ label, href, icon: Icon }) => (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        className="w-11 h-11 rounded-xl grid place-items-center text-slate-400 hover:text-white hover:bg-white/6 transition-colors"
+                      >
+                        <Icon className="w-5 h-5" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500">
+                  <span className="flex items-center gap-2">
+                    <FiMapPin className="w-4 h-4" />
+                    Philippines
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setTerminalOpen(true)}
+                    className="flex items-center gap-2 hover:text-cyan-300 transition-colors"
                   >
-                    <FaEnvelope className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
-                  </a>
+                    <FiTerminal className="w-4 h-4" />
+                    Open terminal
+                    <kbd className="hidden sm:inline font-mono text-[11px] border border-white/15 rounded px-1.5 py-px">`</kbd>
+                  </button>
                 </div>
               </div>
 
-              {/* Right Side - Image */}
+              {/* Portrait */}
               <div className="flex justify-center lg:justify-end">
-                <div className="relative group">
-                  {/* Animated Glow Effect */}
-                  <div className="absolute inset-0 bg-linear-to-br from-purple-500/30 via-blue-500/30 to-cyan-500/30 rounded-2xl blur-2xl group-hover:blur-3xl transition-all duration-500 animate-pulse"></div>
+                <div className="relative w-full max-w-sm">
+                  <div className="absolute -inset-6 rounded-[2rem] bg-linear-to-br from-violet-600/30 via-fuchsia-500/10 to-cyan-400/20 blur-3xl" aria-hidden="true" />
+                  <span className="corner -top-3 -left-3 border-t-2 border-l-2 rounded-tl-lg" aria-hidden="true" />
+                  <span className="corner -top-3 -right-3 border-t-2 border-r-2 rounded-tr-lg" aria-hidden="true" />
+                  <span className="corner -bottom-3 -left-3 border-b-2 border-l-2 rounded-bl-lg" aria-hidden="true" />
+                  <span className="corner -bottom-3 -right-3 border-b-2 border-r-2 rounded-br-lg" aria-hidden="true" />
 
-                  {/* Image Container with Theme Design */}
-                  <div className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden border-2 border-purple-500/30 bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm shadow-2xl shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-all duration-300 group-hover:border-purple-500/50">
+                  <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 bg-ink-2">
                     <img
                       src={profileImage}
                       alt="Ashley Kier Ferreol"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                     />
-
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-purple-900/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-linear-to-t from-ink/80 via-transparent to-transparent" />
                   </div>
 
-                  {/* Decorative Corner Elements */}
-                  <div className="absolute -top-3 -right-3 w-20 h-20 bg-purple-500/20 rounded-full blur-xl group-hover:bg-purple-500/30 transition-colors duration-300"></div>
-                  <div className="absolute -bottom-3 -left-3 w-24 h-24 bg-cyan-500/20 rounded-full blur-xl group-hover:bg-cyan-500/30 transition-colors duration-300"></div>
-
-                  {/* Border Accent Lines */}
-                  <div className="absolute top-0 right-0 w-16 h-0.5 bg-linear-to-r from-transparent to-purple-400/50"></div>
-                  <div className="absolute bottom-0 left-0 w-16 h-0.5 bg-linear-to-r from-purple-400/50 to-transparent"></div>
+                  {/* Terminal chip */}
+                  <button
+                    type="button"
+                    onClick={() => setTerminalOpen(true)}
+                    aria-label="Open interactive terminal"
+                    className="group absolute -left-4 sm:-left-10 bottom-8 text-left rounded-xl border border-white/10 hover:border-cyan-300/40 bg-ink-2/90 backdrop-blur-md shadow-2xl shadow-black/40 p-3.5 font-mono text-xs leading-relaxed transition-colors cursor-pointer"
+                  >
+                    <span className="absolute -top-3 right-3 rounded-full bg-cyan-300 text-ink px-2 py-0.5 text-[10px] font-semibold shadow-lg shadow-cyan-500/30 group-hover:-translate-y-0.5 transition-transform">
+                      click me
+                    </span>
+                    <div className="flex gap-1.5 mb-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+                    </div>
+                    <p>
+                      <span className="text-cyan-300">$</span>{" "}
+                      <span className="text-slate-400">focus:</span>{" "}
+                      <span className="text-violet-300">cloud · ai · web</span>
+                    </p>
+                    <p className="caret">
+                      <span className="text-cyan-300">$</span>{" "}
+                      <span className="text-slate-400">status:</span>{" "}
+                      <span className="text-emerald-300">building</span>
+                    </p>
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Technology Logos Loop - Full Width at Bottom Center */}
-            <div className="w-full mt-12 mb-16 relative">
-              {/* Decorative glow effects */}
-              <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
-              <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
+            {/* Stats */}
+            <div className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+              {stats.map(({ value, label, icon: Icon }, i) => (
+                <div
+                  key={label}
+                  className={`reveal ${card} p-5 flex items-center gap-4`}
+                  style={{ "--reveal-delay": `${i * 80}ms` } as CSSProperties}
+                >
+                  <div className="hidden sm:grid shrink-0 w-11 h-11 rounded-xl place-items-center bg-violet-400/10 text-violet-300">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-display text-2xl md:text-3xl font-semibold text-white">
+                      {value}
+                    </div>
+                    <p className="text-slate-400 text-xs md:text-sm">{label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-              <LogoLoop
-                logos={[
-                  {
-                    node: <SiReact className="w-10 h-10" />,
-                    title: "React",
-                    href: "https://react.dev",
-                  },
-                  {
-                    node: <SiJavascript className="w-10 h-10" />,
-                    title: "JavaScript",
-                    href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-                  },
-                  {
-                    node: <SiTypescript className="w-10 h-10" />,
-                    title: "TypeScript",
-                    href: "https://www.typescriptlang.org",
-                  },
-                  {
-                    node: <SiGit className="w-10 h-10" />,
-                    title: "Git",
-                    href: "https://git-scm.com",
-                  },
-                  {
-                    node: <SiAmazon className="w-10 h-10" />,
-                    title: "AWS",
-                    href: "https://aws.amazon.com",
-                  },
-                  {
-                    node: <SiDocker className="w-10 h-10" />,
-                    title: "Docker",
-                    href: "https://www.docker.com",
-                  },
-                  {
-                    node: <SiKubernetes className="w-10 h-10" />,
-                    title: "Kubernetes",
-                    href: "https://kubernetes.io",
-                  },
-                  {
-                    node: <SiPython className="w-10 h-10" />,
-                    title: "Python",
-                    href: "https://www.python.org",
-                  },
-                ]}
-                speed={50}
-                direction="left"
-                logoHeight={40}
-                gap={64}
-                pauseOnHover={true}
-                scaleOnHover={true}
-                fadeOut={true}
-                fadeOutColor="rgb(30 27 75)"
-                ariaLabel="Technology stack"
-                className="text-gray-300 relative z-10"
+        {/* Tech marquee */}
+        <div className="border-y border-white/6 bg-white/[0.015] py-6">
+          <LogoLoop
+            logos={techStack.map(({ icon: Icon, name, href }) => ({
+              node: (
+                <span className="flex items-center gap-2.5 text-base font-medium text-slate-400 hover:text-white transition-colors">
+                  <Icon className="w-6 h-6" />
+                  {name}
+                </span>
+              ),
+              title: name,
+              href,
+            }))}
+            speed={40}
+            direction="left"
+            logoHeight={28}
+            gap={56}
+            pauseOnHover={true}
+            scaleOnHover={false}
+            fadeOut={true}
+            fadeOutColor="#08070f"
+            ariaLabel="Technology stack"
+          />
+        </div>
+
+        {/* Experience */}
+        <section id="experience" className="py-24 md:py-32 px-6">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeading
+              index="01"
+              eyebrow="Experience"
+              title={
+                <>
+                  Where I've{" "}
+                  <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-400 to-cyan-300">
+                    worked
+                  </span>
+                </>
+              }
+              subtitle="Hands-on roles building cloud infrastructure, testing quality, and leading product marketing."
+            />
+
+            <ol className="relative border-l border-white/10 ml-2 md:ml-0 space-y-6">
+              {experience.map((job, i) => (
+                <li
+                  key={job.role}
+                  className="reveal relative pl-8 md:pl-12"
+                  style={{ "--reveal-delay": `${i * 60}ms` } as CSSProperties}
+                >
+                  <span
+                    className={`absolute -left-[7px] top-8 w-3.5 h-3.5 rounded-full border-2 border-ink ${
+                      job.current ? "bg-emerald-400 shadow-[0_0_0_4px_rgb(52_211_153/0.15)]" : "bg-violet-400"
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <article className={`${card} p-6 md:p-8 grid md:grid-cols-[180px_1fr] gap-3 md:gap-8`}>
+                    <div className="font-mono text-xs uppercase tracking-wider text-slate-500 md:pt-1.5">
+                      {job.period}
+                      {job.current && (
+                        <span className="mt-2 block w-fit rounded-full bg-emerald-400/10 border border-emerald-400/20 px-2 py-0.5 text-[10px] text-emerald-300">
+                          Current
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="font-display text-xl md:text-2xl font-semibold text-white">
+                        {job.role}
+                      </h3>
+                      <p className="text-violet-300 font-medium mt-1">{job.company}</p>
+                      <p className="text-slate-400 text-sm md:text-[15px] mt-3 leading-relaxed">
+                        {job.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-5">
+                        {job.tags.map((t) => (
+                          <Tag key={t}>{t}</Tag>
+                        ))}
+                      </div>
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ol>
+
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {highlights.map((h, i) => (
+                <div
+                  key={h.label}
+                  className={`reveal ${card} p-6`}
+                  style={{ "--reveal-delay": `${i * 80}ms` } as CSSProperties}
+                >
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-cyan-300/80 mb-3">
+                    {h.label}
+                  </p>
+                  <p className="font-display text-lg font-semibold text-white">{h.title}</p>
+                  {h.lines.map((line) => (
+                    <p key={line} className="text-slate-400 text-sm mt-1">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Skills */}
+        <section id="skills" className="py-24 md:py-32 px-6">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeading
+              index="02"
+              eyebrow="Skills"
+              title={
+                <>
+                  What I{" "}
+                  <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-400 to-cyan-300">
+                    work with
+                  </span>
+                </>
+              }
+              subtitle="Technologies and capabilities I use to build useful, reliable products."
+            />
+
+            <div className="reveal">
+              <MagicBento
+                cards={skills.map((s) => ({ ...s, color: "rgba(15, 13, 28, 0.7)" }))}
+                textAutoHide={false}
+                enableStars={true}
+                enableSpotlight={true}
+                enableBorderGlow={true}
+                enableTilt={false}
+                enableMagnetism={true}
+                clickEffect={true}
+                spotlightRadius={300}
+                particleCount={10}
+                glowColor="139, 92, 246"
               />
             </div>
+          </div>
+        </section>
 
-            {/* Stats Section */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-purple-500/20">
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-cyan-400 group-hover:scale-110 transition-transform">
-                  1+
-                </div>
-                <p className="text-gray-400 text-xs mt-2">Year of Experience</p>
+        {/* Certificates */}
+        <section id="certificates" className="py-24 md:py-32 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12 md:mb-16">
+              <div className="[&>div]:mb-0">
+                <SectionHeading
+                  index="03"
+                  eyebrow="Certificates"
+                  title={
+                    <>
+                      Certifications &{" "}
+                      <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-400 to-cyan-300">
+                        badges
+                      </span>
+                    </>
+                  }
+                  subtitle="AWS training, technical courses, badges, and academic achievements."
+                />
               </div>
+              <dl className="reveal grid grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/8 bg-white/8 shrink-0">
+                {certSummary.map((s) => (
+                  <div key={s.label} className="bg-ink-2 px-4 md:px-6 py-4 text-center">
+                    <dt className="sr-only">{s.label}</dt>
+                    <dd className="font-display text-2xl font-semibold text-white">{s.value}</dd>
+                    <p className="text-[11px] md:text-xs text-slate-500 mt-0.5" aria-hidden="true">
+                      {s.label}
+                    </p>
+                  </div>
+                ))}
+              </dl>
+            </div>
 
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-400 group-hover:scale-110 transition-transform">
-                  6+
-                </div>
-                <p className="text-gray-400 text-xs mt-2">Featured Projects</p>
-              </div>
-
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400 group-hover:scale-110 transition-transform">
-                  4
-                </div>
-                <p className="text-gray-400 text-xs mt-2">Internships & Roles</p>
-              </div>
-
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-5 text-center hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-400 group-hover:scale-110 transition-transform">
-                  3
-                </div>
-                <p className="text-gray-400 text-xs mt-2">Live Projects</p>
-              </div>
+            <div className="reveal">
+              <CertificateBento certificates={certificates} enableHover={true} enableGlow={true} />
             </div>
           </div>
         </section>
 
-        {/* Experience Section */}
-        <section id="experience" className="py-20 px-6 relative">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Professional{" "}
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-400">
-                  Experience
+        {/* Projects */}
+        <section id="projects" className="py-24 md:py-32 px-6">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeading
+              index="04"
+              eyebrow="Projects"
+              title={
+                <>
+                  Things I've{" "}
+                  <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-400 to-cyan-300">
+                    built
+                  </span>
+                </>
+              }
+              subtitle="Applications showcasing full-stack development and AI integration, all live and deployed."
+            />
+
+            {/* Featured project */}
+            <a
+              href={featured.href}
+              onClick={() => unlock("curious")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`reveal group ${card} overflow-hidden grid lg:grid-cols-[1.2fr_1fr] mb-5`}
+            >
+              <div className="relative overflow-hidden bg-ink-2 aspect-video lg:aspect-auto lg:min-h-80">
+                <img
+                  src={featured.image}
+                  alt={featured.title}
+                  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+                />
+                <div className="absolute inset-0 bg-linear-to-t lg:bg-linear-to-r from-transparent via-transparent to-ink/30" />
+              </div>
+              <div className="p-6 md:p-10 flex flex-col">
+                <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-wider">
+                  <span className="text-cyan-300">Featured</span>
+                  <span className="text-slate-600">/</span>
+                  <span className="text-slate-500">{featured.kind}</span>
+                </div>
+                <h3 className="font-display text-2xl md:text-3xl font-semibold text-white mt-4 group-hover:text-violet-200 transition-colors">
+                  {featured.title}
+                </h3>
+                <p className="text-slate-400 mt-4 leading-relaxed">{featured.description}</p>
+                <div className="flex flex-wrap gap-2 mt-6">
+                  {featured.tags.map((t) => (
+                    <Tag key={t}>{t}</Tag>
+                  ))}
+                </div>
+                <span className="mt-auto pt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-violet-300 group-hover:text-white transition-colors">
+                  Visit live site
+                  <FiArrowUpRight className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
-              </h2>
-              <p className="text-gray-400 text-lg">
-                Hands-on roles building cloud infrastructure, testing quality, and leading product marketing
-              </p>
+              </div>
+            </a>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {otherProjects.map((p, i) => (
+                <a
+                  key={p.title}
+                  href={p.href}
+                  onClick={() => unlock("curious")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`reveal group ${card} overflow-hidden flex flex-col`}
+                  style={{ "--reveal-delay": `${i * 80}ms` } as CSSProperties}
+                >
+                  <div className="relative aspect-video overflow-hidden bg-ink-2">
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+                    />
+                    <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-ink/70 backdrop-blur border border-white/10 grid place-items-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                      <FiArrowUpRight />
+                    </span>
+                  </div>
+                  <div className="p-6 flex flex-col flex-1">
+                    <p className="font-mono text-xs uppercase tracking-wider text-slate-500">
+                      {p.kind}
+                    </p>
+                    <h3 className="font-display text-xl font-semibold text-white mt-2 group-hover:text-violet-200 transition-colors">
+                      {p.title}
+                    </h3>
+                    <p className="text-slate-400 text-sm mt-3 leading-relaxed line-clamp-3">
+                      {p.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-5">
+                      {p.tags.map((t) => (
+                        <Tag key={t}>{t}</Tag>
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              ))}
             </div>
 
+            <div className="reveal mt-10 text-center">
+              <a
+                href={GITHUB}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+              >
+                <SiGithub className="w-4 h-4" />
+                More on GitHub
+                <FiArrowUpRight />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact CTA */}
+        <section id="contact" className="py-24 md:py-32 px-6">
+          <div className="reveal max-w-4xl mx-auto relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-violet-600/20 via-ink-2 to-cyan-500/10 px-6 py-16 md:px-16 md:py-20 text-center">
+            <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl" aria-hidden="true" />
             <div className="relative">
-              {/* Central Timeline Line */}
-              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500/20 via-purple-400/70 to-purple-500/20 -translate-x-1/2"></div>
-
-              {/* Timeline Dots */}
-              <div className="hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
-
-              <div className="space-y-8">
-                {/* Experience Card 1 - Left */}
-                <div className="relative">
-                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
-                  <div className="timeline-item md:w-1/2 md:pr-12">
-                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Feb 2026 – May 2026</span>
-                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">System & Cloud Administrator</h3>
-                      <p className="text-gray-300 font-medium">Pilipinas Micro-Matrix Technology (PMT Joint Venture) Inc.</p>
-                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
-                        Administered system infrastructure and cloud environments ensuring uptime, reliability, and security. Supported deployment, configuration, and monitoring of cloud-based services and server resources. Collaborated on system provisioning, access management, and network configuration.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Experience Card 2 - Right */}
-                <div className="relative">
-                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
-                  <div className="timeline-item md:w-1/2 md:ml-auto md:pl-12">
-                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Oct 2025 – Present</span>
-                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">Marketing Lead</h3>
-                      <p className="text-gray-300 font-medium">Catalyx Solutions</p>
-                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
-                        Lead brand strategy, marketing direction, and market positioning for AI-driven and security-focused products. Developed marketing materials, pitch decks, and product messaging for hackathons, demos, and presentations. Coordinated user engagement, outreach, and promotional efforts with product and technical teams.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Experience Card 3 - Left */}
-                <div className="relative">
-                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
-                  <div className="timeline-item md:w-1/2 md:pr-12">
-                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Dec 2025 – Feb 2026</span>
-                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">Quality Assurance Tester</h3>
-                      <p className="text-gray-300 font-medium">Lujo PH</p>
-                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
-                        Created and maintained QA test plans, test cases, and scenarios based on business requirements. Performed manual testing on web applications to identify bugs, usability issues, and performance concerns. Conducted functional, regression, and UAT testing. Documented defects and collaborated with developers and designers to ensure timely resolution.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Experience Card 4 - Right */}
-                <div className="relative">
-                  <div className="timeline-dot hidden md:block absolute left-1/2 top-8 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900"></div>
-                  <div className="timeline-item md:w-1/2 md:ml-auto md:pl-12">
-                    <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20 group">
-                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Mar 2025 – Aug 2025</span>
-                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-purple-400 transition-colors">Software Engineer & UI/UX Design Intern</h3>
-                      <p className="text-gray-300 font-medium">Kloudtech</p>
-                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">
-                        Contributed to secure software development using best practices in coding, system design, and UI/UX principles. Implemented scalable backend and frontend components focusing on performance, usability, and security. Collaborated in Agile workflows, peer code reviews, CI/CD pipelines, and UI/UX design refinement.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Education & Achievements */}
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
-                <h3 className="text-lg font-bold text-cyan-400 mb-2 group-hover:scale-105 transition-transform">Education</h3>
-                <p className="text-white font-semibold">Gordon College</p>
-                <p className="text-gray-400 text-sm">BS Computer Science</p>
-              </div>
-
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
-                <h3 className="text-lg font-bold text-cyan-400 mb-2 group-hover:scale-105 transition-transform">Achievements</h3>
-                <p className="text-white font-semibold">Base PH Hackathon Winner</p>
-                <p className="text-gray-400 text-sm">DataCamp Scholar</p>
-                <p className="text-gray-500 text-xs">AWS Cloud Club Committee</p>
-              </div>
-
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
-                <h3 className="text-lg font-bold text-cyan-400 mb-2 group-hover:scale-105 transition-transform">Affiliations</h3>
-                <p className="text-white font-semibold">AWS Cloud Club</p>
-                <p className="text-gray-400 text-sm">Operations Committee</p>
-                <p className="text-gray-500 text-xs">Gordon College Chapter</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Skills & Technology Section */}
-        <section id="skills" className="py-20 px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Skills &{" "}
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400">
-                  Expertise
-                </span>
-              </h2>
-              <p className="text-gray-400 text-lg">
-                Technologies and capabilities I use to build useful, reliable products
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-300 mb-5">
+                05 · Contact
               </p>
-            </div>
-
-            <MagicBento
-              cards={[
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
-                  title: "Frontend Development",
-                  description:
-                    "React, React Native, Next.js, TailwindCSS, ShadCN UI, MUI — building responsive, modern web and mobile applications",
-                  label: "Web Development",
-                },
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
-                  title: "Backend Development",
-                  description:
-                    "Node.js, Express.js — developing RESTful APIs, server-side logic, and backend services",
-                  label: "Server-Side",
-                },
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
-                  title: "Cloud & Infrastructure",
-                  description:
-                    "AWS EC2, AWS Cloud Essentials, Ubuntu Server, Nginx, PM2 — deploying and managing cloud-based applications",
-                  label: "Cloud Computing",
-                },
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
-                  title: "UI/UX Design",
-                  description:
-                    "Figma, Canva — designing user interfaces and creating visual assets for web and mobile",
-                  label: "Design",
-                },
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
-                  title: "AI & LLM Integration",
-                  description:
-                    "Groq, Agora AI, Prompt Engineering, Function Calling, RAG systems — integrating AI models into applications",
-                  label: "Artificial Intelligence",
-                },
-                {
-                  color: "rgba(15, 23, 42, 0.6)",
-                  title: "Programming & Databases",
-                  description:
-                    "JavaScript, TypeScript, SQL, HTML/CSS — core programming skills and database fundamentals",
-                  label: "Core Skills",
-                },
-              ]}
-              textAutoHide={false}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={false}
-              enableMagnetism={true}
-              clickEffect={true}
-              spotlightRadius={300}
-              particleCount={10}
-              glowColor="59, 130, 246"
-            />
-          </div>
-        </section>
-
-        {/* Certificates Section */}
-        <section id="certificates" className="py-20 px-6 bg-slate-900/50">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                  Professional &{" "}
-                <span className="text-purple-400">Certificates</span>
+              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight text-white">
+                Let's build something together
               </h2>
-              <p className="text-gray-400 text-lg">
-                AWS training, technical courses, badges, and academic achievements
+              <p className="mt-5 text-slate-300/80 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+                Open to software engineering, cloud, and AI roles, and always up
+                for a good collaboration. My inbox is open.
               </p>
-            </div>
-
-            <CertificateBento
-              certificates={[
-                {
-                  image: cloudPractBadge,
-                  title: "AWS Certified Cloud Practitioner",
-                  issuer: "Amazon Web Services",
-                  year: "2024",
-                  type: "Certificate",
-                  icon: SiAmazon,
-                  badgeColor: "bg-orange-500",
-                },
-                {
-                  image: solutionArchBadge,
-                  title: "AWS Certified Solutions Architect",
-                  issuer: "Amazon Web Services",
-                  year: "2024",
-                  type: "Certificate",
-                  icon: SiAmazon,
-                  badgeColor: "bg-orange-500",
-                },
-                {
-                  image: awsBadge,
-                  title: "AWS Cloud Badge",
-                  issuer: "Amazon Web Services",
-                  year: "2024",
-                  type: "Badge",
-                  icon: SiAmazon,
-                  badgeColor: "bg-orange-500",
-                },
-                {
-                  image: datacampCloud,
-                  title: "Cloud Computing Fundamentals",
-                  issuer: "DataCamp",
-                  year: "2024",
-                  type: "Course Complete",
-                  icon: SiDatacamp,
-                  badgeColor: "bg-green-500",
-                },
-                {
-                  image: introCyberBadge,
-                  title: "Introduction to Cybersecurity",
-                  issuer: "Cisco Networking Academy",
-                  year: "2023",
-                  type: "Course Complete",
-                  icon: SiCisco,
-                  badgeColor: "bg-blue-600",
-                },
-                {
-                  image: networkingBadge,
-                  title: "Networking Essentials",
-                  issuer: "Cisco Networking Academy",
-                  year: "2023",
-                  type: "Badge",
-                  icon: SiCisco,
-                  badgeColor: "bg-blue-600",
-                },
-                {
-                  image: baseBuildBadge,
-                  title: "Foundation Building Badge",
-                  issuer: "Base PH",
-                  year: "2023",
-                  type: "Participant",
-                  badgeColor: "bg-blue-600",
-                },
-                {
-                  image: awsHackathon,
-                  title: "AWS Cloud Club PH Innovation Cup 2025",
-                  issuer: "AWS Cloud Club Philippines",
-                  year: "2025",
-                  type: "Participant",
-                  icon: SiAmazon,
-                  badgeColor: "bg-orange-500",
-                },
-              ]}
-              enableHover={true}
-              enableGlow={true}
-            />
-
-            {/* Certificate Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-              {/* Total Badges */}
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
-                <div className="flex justify-center mb-2">
-                  <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-cyan-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                   8
-                </h3>
-                <p className="text-gray-400 text-xs">Total Badges</p>
-              </div>
-
-              {/* Verified */}
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
-                <div className="flex justify-center mb-2">
-                  <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-cyan-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                   8
-                </h3>
-                <p className="text-gray-400 text-xs">Verified</p>
-              </div>
-
-              {/* This Year */}
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
-                <div className="flex justify-center mb-2">
-                  <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-cyan-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                   5
-                </h3>
-                <p className="text-gray-400 text-xs">This Year</p>
-              </div>
-
-              {/* Platforms */}
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-5 text-center hover:border-cyan-500/50 transition-all group hover:shadow-lg hover:shadow-cyan-500/20">
-                <div className="flex justify-center mb-2">
-                  <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-cyan-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <h3 className="text-3xl font-bold text-cyan-400 mb-1 group-hover:scale-110 transition-transform">
-                   4+
-                </h3>
-                <p className="text-gray-400 text-xs">Platforms</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Projects Section */}
-        <section id="projects" className="py-20 px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Featured <span className="text-purple-400">Projects</span>
-              </h2>
-              <p className="text-gray-400 text-lg">
-                Innovative applications showcasing full-stack development and AI
-                integration
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Personal RAG Chatbot Project */}
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:shadow-purple-500/20 group">
-                <div className="relative h-44 overflow-hidden bg-slate-900/50">
-                  <img
-                    src={ragChatbot}
-                    alt="Personal RAG Chatbot"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
-                </div>
-                <div className="p-5">
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                    Personal RAG Chatbot
-                  </h3>
-                  <p className="text-gray-400 mb-3 text-sm leading-relaxed line-clamp-3">
-                    AI Document Q&A Platform with PDF ingestion, text chunking, vector embedding via Pinecone, semantic search, and LLM-generated responses using Groq's Llama 3.1 70B model. Supports multi-document querying with filename filtering.
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-xs font-medium border border-purple-500/20">
-                      Next.js 15
-                    </span>
-                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-300 rounded text-xs font-medium border border-blue-500/20">
-                      TypeScript
-                    </span>
-                    <span className="px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded text-xs font-medium border border-cyan-500/20">
-                      LangChain.js
-                    </span>
-                    <span className="px-2 py-0.5 bg-green-500/10 text-green-300 rounded text-xs font-medium border border-green-500/20">
-                      Pinecone
-                    </span>
-                    <span className="px-2 py-0.5 bg-orange-500/10 text-orange-300 rounded text-xs font-medium border border-orange-500/20">
-                      Groq
-                    </span>
-                  </div>
-                  <a
-                    href="https://ragdocs-app.vercel.app/landing"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-purple-400 hover:text-purple-300 text-sm font-semibold inline-flex items-center group/link"
-                  >
-                    View Project
-                    <svg
-                      className="w-4 h-4 ml-1 transition-transform group-hover/link:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-
-              {/* Lead-to-CRM Automation Agent Project */}
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:shadow-purple-500/20 group">
-                <div className="relative h-44 overflow-hidden bg-slate-900/50">
-                  <img
-                    src={leadCrm}
-                    alt="Lead-to-CRM Automation Agent"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
-                </div>
-                <div className="p-5">
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                    Lead-to-CRM Automation Agent
-                  </h3>
-                  <p className="text-gray-400 mb-3 text-sm leading-relaxed line-clamp-3">
-                    End-to-end automation pipeline that captures form-submitted leads, processes them in real-time using Groq's LLM API for auto-generated summaries, urgency scoring, and categorization. Integrates with Airtable CRM and Slack for instant team notifications.
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-xs font-medium border border-purple-500/20">
-                      Node.js
-                    </span>
-                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-300 rounded text-xs font-medium border border-blue-500/20">
-                      Express.js
-                    </span>
-                    <span className="px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded text-xs font-medium border border-cyan-500/20">
-                      Groq API
-                    </span>
-                    <span className="px-2 py-0.5 bg-green-500/10 text-green-300 rounded text-xs font-medium border border-green-500/20">
-                      Airtable
-                    </span>
-                    <span className="px-2 py-0.5 bg-orange-500/10 text-orange-300 rounded text-xs font-medium border border-orange-500/20">
-                      Slack API
-                    </span>
-                  </div>
-                  <a
-                    href="https://lead-to-crm-agent.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-purple-400 hover:text-purple-300 text-sm font-semibold inline-flex items-center group/link"
-                  >
-                    View Project
-                    <svg
-                      className="w-4 h-4 ml-1 transition-transform group-hover/link:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-
-              {/* GCFAS Project */}
-              <div className="bg-linear-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:shadow-purple-500/20 group">
-                <div className="relative h-44 overflow-hidden bg-slate-900/50">
-                  <img
-                    src={gcfas}
-                    alt="GCFAS Project"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
-                </div>
-                <div className="p-5">
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                    GCFAS - Gordon College Faculty Assessment System
-                  </h3>
-                  <p className="text-gray-400 mb-3 text-sm leading-relaxed line-clamp-3">
-                    A comprehensive faculty assessment system for Gordon College that streamlines the evaluation process. Built with modern web technologies to provide an efficient and user-friendly interface for faculty performance assessments.
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-xs font-medium border border-purple-500/20">
-                      React
-                    </span>
-                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-300 rounded text-xs font-medium border border-blue-500/20">
-                      TypeScript
-                    </span>
-                    <span className="px-2 py-0.5 bg-cyan-500/10 text-cyan-300 rounded text-xs font-medium border border-cyan-500/20">
-                      TailwindCSS
-                    </span>
-                    <span className="px-2 py-0.5 bg-green-500/10 text-green-300 rounded text-xs font-medium border border-green-500/20">
-                      Node.js
-                    </span>
-                  </div>
-                  <a
-                    href="https://gcfas.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-purple-400 hover:text-purple-300 text-sm font-semibold inline-flex items-center group/link"
-                  >
-                    View Project
-                    <svg
-                      className="w-4 h-4 ml-1 transition-transform group-hover/link:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
-                </div>
+              <div className="mt-9 flex flex-wrap justify-center gap-3">
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="inline-flex items-center gap-2 rounded-xl bg-white text-ink hover:bg-violet-100 px-6 py-3.5 text-sm font-semibold transition-colors"
+                >
+                  <FaEnvelope className="w-3.5 h-3.5" />
+                  {EMAIL}
+                </a>
+                <a
+                  href={LINKEDIN}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition-colors"
+                >
+                  <SiLinkedin className="w-4 h-4" />
+                  Connect on LinkedIn
+                </a>
               </div>
             </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="relative border-t border-purple-500/20 bg-linear-to-b from-slate-900/50 to-slate-950">
-          <div className="max-w-7xl mx-auto px-6 py-16">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-              {/* Left Section - Name & Description */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="text-2xl font-bold">
-                    <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-cyan-400">
-                      AKF
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white">
-                    Ashley Kier Ferreol
-                  </h3>
-                </div>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Software engineer passionate about cloud engineering,
-                  full-stack development, and AI. Building practical solutions
-                  through impactful projects and continuous learning.
-                </p>
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-green-400">Open to collaboration</span>
-                </div>
-              </div>
-
-              {/* Middle Section - Explore */}
-              <div className="space-y-4">
-                <h4 className="text-white font-semibold text-sm uppercase tracking-wider">
-                  Explore
-                </h4>
-                <ul className="space-y-3">
-                  <li>
-                    <a
-                      href="#home"
-                      className="text-gray-400 hover:text-purple-400 transition-colors text-sm flex items-center gap-2 group"
-                    >
-                      <span className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                        →
-                      </span>
-                      About Me
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#skills"
-                      className="text-gray-400 hover:text-purple-400 transition-colors text-sm flex items-center gap-2 group"
-                    >
-                      <span className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                        →
-                      </span>
-                      Technical Skills
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#certificates"
-                      className="text-gray-400 hover:text-purple-400 transition-colors text-sm flex items-center gap-2 group"
-                    >
-                      <span className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                        →
-                      </span>
-                      Certifications
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#projects"
-                      className="text-gray-400 hover:text-purple-400 transition-colors text-sm flex items-center gap-2 group"
-                    >
-                      <span className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                        →
-                      </span>
-                      Portfolio
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Right Section - Get in Touch */}
-              <div className="space-y-4">
-                <h4 className="text-white font-semibold text-sm uppercase tracking-wider">
-                  Get in Touch
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href="https://github.com/Ashlikiyer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-slate-800/50 border border-purple-500/20 rounded-lg text-gray-300 hover:text-white hover:border-purple-500/50 hover:bg-slate-800 transition-all text-sm flex items-center gap-2 group"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                    </svg>
-                    GitHub
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/kierferreol/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-slate-800/50 border border-purple-500/20 rounded-lg text-gray-300 hover:text-white hover:border-purple-500/50 hover:bg-slate-800 transition-all text-sm flex items-center gap-2 group"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                    LinkedIn
-                  </a>
-                  <a
-                    href="mailto:ashleykierferreol@gmail.com"
-                    className="px-4 py-2 bg-slate-800/50 border border-purple-500/20 rounded-lg text-gray-300 hover:text-white hover:border-purple-500/50 hover:bg-slate-800 transition-all text-sm flex items-center gap-2 group"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Email
-                  </a>
-                </div>
+        <footer className="border-t border-white/6">
+          <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-lg bg-linear-to-br from-violet-500 to-cyan-400 grid place-items-center text-ink text-sm font-display font-bold">
+                AK
+              </span>
+              <div>
+                <p className="text-sm font-medium text-white">Ashley Kier Ferreol</p>
+                <p className="text-xs text-slate-500">Crafted with care and coffee · © 2026</p>
               </div>
             </div>
 
-            {/* Bottom Bar */}
-            <div className="pt-8 border-t border-purple-500/10 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <span>Crafted with care and coffee by Ashley</span>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span>© 2026 Ashley Kier Ferreol</span>
-                <button
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                  className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 group"
+            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-400">
+              {navLinks.slice(0, 4).map((l) => (
+                <li key={l.href}>
+                  <a href={l.href} className="hover:text-white transition-colors">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-center gap-1">
+              {socials.map(({ label, href, icon: Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-10 h-10 rounded-lg grid place-items-center text-slate-400 hover:text-white hover:bg-white/6 transition-colors"
                 >
-                  <span>↑ Top</span>
-                </button>
-              </div>
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                aria-label="Back to top"
+                className="ml-2 w-10 h-10 rounded-lg grid place-items-center border border-white/10 text-slate-300 hover:text-white hover:border-violet-400/40 transition-colors"
+              >
+                <FiArrowUp className="w-4 h-4" />
+              </button>
             </div>
           </div>
-
-          {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-linear-to-t from-purple-900/5 to-transparent pointer-events-none"></div>
         </footer>
       </div>
-      {/* End Content Wrapper */}
     </div>
   );
 }

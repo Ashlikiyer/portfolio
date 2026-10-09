@@ -1,6 +1,7 @@
 /* Smooth scrolling for anchor links */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
   overflow-x: hidden;
 }
 
@@ -15,127 +16,122 @@ body {
   overflow-x: hidden;
 }
 
-/* Timeline scroll reveal animations */
-.timeline-item {
+/* Faint grid behind the hero, faded out toward the edges */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Noise overlay to keep large dark areas from banding */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+}
+
+/* Scroll reveal */
+.reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms), 0ms, 0ms, var(--reveal-delay, 0ms);
 }
 
-.timeline-item.is-visible {
+.reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
-/* Left-side items slide in from left */
-.timeline-item:nth-child(odd) {
-  transform: translateX(-30px) translateY(30px);
+/* Photo frame corner brackets */
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: var(--color-accent);
+  opacity: 0.7;
 }
 
-.timeline-item:nth-child(odd).is-visible {
-  transform: translateX(0) translateY(0);
+/* Blinking caret for terminal snippets */
+.caret::after {
+  content: "▋";
+  margin-left: 2px;
+  animation: caret-blink 1.1s steps(1) infinite;
+  color: var(--color-accent-2);
 }
 
-/* Right-side items slide in from right */
-.timeline-item:nth-child(even) {
-  transform: translateX(30px) translateY(30px);
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
-.timeline-item:nth-child(even).is-visible {
-  transform: translateX(0) translateY(0);
-}
-
-/* Timeline dots fade and scale in */
-.timeline-dot {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
-  transition: opacity 0.4s ease-out 0.2s, transform 0.4s ease-out 0.2s;
-}
-
-.is-visible ~ .timeline-dot,
-.timeline-item.is-visible + * .timeline-dot {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-/* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .timeline-item,
-  .timeline-dot {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
     transition: none;
     opacity: 1;
     transform: none;
   }
-}
 
-/* Mobile-specific fixes */
-@media (max-width: 640px) {
-  /* Improve tap targets for cards and links */
-  .timeline-item,
-  [class*="rounded-xl"] {
-    min-height: 44px;
-  }
-
-  /* Ensure images don't cause horizontal overflow */
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* Fix hero section spacing on mobile */
-  section#home {
-    padding-top: 5rem;
-    padding-bottom: 3rem;
-  }
-
-  /* Mobile timeline animations - simpler transforms */
-  .timeline-item {
-    transform: translateY(20px);
-  }
-
-  .timeline-item:nth-child(odd),
-  .timeline-item:nth-child(even) {
-    transform: translateY(20px);
-  }
-
-  .timeline-item.is-visible,
-  .timeline-item:nth-child(odd).is-visible,
-  .timeline-item:nth-child(even).is-visible {
-    transform: translateY(0);
+  .caret::after {
+    animation: none;
   }
 }
 
-/* Tablet fixes */
-@media (min-width: 641px) and (max-width: 1024px) {
-  /* Adjust timeline card spacing */
-  .timeline-item {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
+/* Achievement toast */
+.achievement-toast {
+  animation: toast-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  /* Fix bento grid gaps */
-  [class*="grid-cols-"] {
-    gap: 0.75rem;
+.achievement-toast.is-leaving {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
   }
 }
 
-/* Desktop optimizations */
-@media (min-width: 1025px) {
-  /* Ensure smooth hover effects on desktop */
-  .timeline-item {
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
+/* Terminal modal */
+.terminal-backdrop {
+  animation: fade-in 0.2s ease;
+}
 
-  /* Better card hover states */
-  [class*="hover:shadow"] {
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+.terminal-window {
+  animation: terminal-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
 }
 
-/* Fix for iOS Safari viewport issues */
-@supports (-webkit-touch-callout: none) {
-  section {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
+@keyframes terminal-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .achievement-toast,
+  .terminal-backdrop,
+  .terminal-window {
+    animation: none;
   }
 }

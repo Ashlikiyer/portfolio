@@ -493,7 +493,7 @@ const BentoCardGrid: React.FC<{
   gridRef?: React.RefObject<HTMLDivElement | null>;
 }> = ({ children, gridRef }) => (
   <div
-    className="bento-section grid gap-2 p-3 max-w-216 mx-auto select-none relative"
+    className="bento-section grid gap-2 w-full select-none relative"
     style={{ fontSize: "clamp(1rem, 0.9rem + 0.5vw, 1.5rem)" }}
     ref={gridRef}
   >
@@ -648,7 +648,7 @@ const MagicBento: React.FC<BentoProps> = ({
                   enableMagnetism={enableMagnetism}
                 >
                   <div className="card__header flex justify-between items-center gap-3 relative mb-3">
-                    <span className="text-sm font-medium text-blue-400">
+                    <span className="font-mono text-xs uppercase tracking-wider text-violet-300">
                       {card.label}
                     </span>
                   </div>
@@ -667,7 +667,7 @@ const MagicBento: React.FC<BentoProps> = ({
             return (
               <div key={index} className={baseClassName} style={cardStyle}>
                 <div className="card__header flex justify-between items-center gap-3 relative mb-3">
-                  <span className="text-sm font-medium text-blue-400">
+                  <span className="font-mono text-xs uppercase tracking-wider text-violet-300">
                     {card.label}
                   </span>
                 </div>
